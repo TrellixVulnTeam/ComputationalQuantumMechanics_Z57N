@@ -1,13 +1,13 @@
 import numpy as np
 
-def numerov(N, x_start, x_end):
+def numerov(x_start, x_end, N):
 
     x = np.linspace(x_start, x_end, N)
     print(x)
 
 
 def main():
-    numerov(0.3, -10, 10)
+    numerov(-10, 10, 100)
 
 
 if __name__ == "__main__":
