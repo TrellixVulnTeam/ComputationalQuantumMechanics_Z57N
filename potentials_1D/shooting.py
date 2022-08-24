@@ -47,6 +47,19 @@ def findEnergyEigenValues(func, psi0, x, V, E_arr):
         eigenEnergies.append(newton(shootOneE, E_arr[z], args = (func, psi0, x, V)))
     return np.asarray(eigenEnergies)
 
+def shootInfinitePotentialWell(psi0, dx, a, V0, E_arr):
+    x = np.arange(0.0, a + dx, dx)
+    V = []
+    for _ in x:
+        V.append(V0)
+    eigE = findEnergyEigenValues(TimeIndependentSE, psi0, x, V, E_arr)
+    ipw_out = []
+    for E in eigE:
+        out = rk4(TimeIndependentSE, psi0, x, V, E)
+        ipw_out.append(normalize(out [: , 0]))
+    out_arr = np.asarray(ipw_out)
+    return x, out_arr
+
 def main():
     print("Hello World")
 
