@@ -1,1 +1,1 @@
-# computational-quantum-mechanics
+# Computational Quantum Mechanics
