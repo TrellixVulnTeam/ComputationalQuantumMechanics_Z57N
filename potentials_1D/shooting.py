@@ -83,20 +83,33 @@ def shootQuantumHarmonicOscillator(psi0, dx, x_range, V_offset, E_arr):
     for x in x_qho:
         V_qho.append(V_offset + x**2)
     eigE = findEnergyEigenValues(TimeIndependentSE, psi0, x_qho, V_qho, E_arr)
-    pw_out = []
+    qho_out = []
     for E in eigE:
         out = rk4(TimeIndependentSE, psi0, x_qho, V_qho, E)
-        pw_out.append(normalize(out[: , 0]))
-    out_arr = np.asarray(pw_out)
+        qho_out.append(normalize(out[: , 0]))
+    out_arr = np.asarray(qho_out)
     return x_qho, out_arr
+
+def shootQuatricPotential(psi0, dx, x_range, V_offset, E_arr):
+    x_qp = np.arange(-x_range, x_range +dx, dx)
+    V_qp = []
+    for x in x_qp:
+        V_qp.append(V_offset + x**4)
+    eigE = findEnergyEigenValues(TimeIndependentSE, psi0, x_qp, V_qp, E_arr)
+    qp_out = []
+    for E in eigE:
+        out = rk4(TimeIndependentSE, psi0, x_qp, V_qp, E)
+        qp_out.append(normalize(out[:, 0]))
+    out_arr = np.asarray(qp_out)
+    return x_qp, out_arr
 
 def main():
     psi_0 = 0.0
     phi_0 = 1.0
     psi0 = np.array([psi_0, phi_0])
     dx = 0.001
-    E = np.arange(-5, 0, 1.0)
-    x, states = shootQuantumHarmonicOscillator(psi0, dx, 5, -5, E)
+    E = np.arange(0, 3, 0.1)
+    x, states = shootQuatricPotential(psi0, dx, 4, 0, E)
     for state in states:
         plt.plot(x, state)
     plt.show()
