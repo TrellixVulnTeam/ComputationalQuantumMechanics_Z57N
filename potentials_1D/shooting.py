@@ -112,7 +112,6 @@ def shootHydrogenIonPotential(psi0, dx, x_range, a, gama, V0, E_arr):
         else:
             V_H.append(0)
     eigE = findEnergyEigenValues(TimeIndependentSE, psi0, x_H, V_H, E_arr)
-    print(eigE)
     H_out = []
     for E in eigE:
         out = rk4(TimeIndependentSE, psi0, x_H, V_H, E)
