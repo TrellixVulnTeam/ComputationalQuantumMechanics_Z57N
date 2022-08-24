@@ -19,7 +19,6 @@ def rk4(func, psi0, x, V, E):
         psi[i+1] = psi[i] + (k1 + 2.0*(k2+k3)+k4)/6.0
     return psi
 
-
 def shoot(func, psi0, x, V, E_arr):
     psi_end = []
     for E in E_arr:
@@ -27,6 +26,17 @@ def shoot(func, psi0, x, V, E_arr):
         psi_end.append(psi[len(psi)-1][0])
     return psi_end
 
+def shootOneE(E, func, psi0, x, V):
+    psi = rk4(func, psi0, x, V, E)
+    return psi[len(psi)-1][0]
+
+def findZeros(values):
+    signs = np.signbit(values)
+    return np.where(np.diff(signs))[0]
+
+def normalize(func):
+    func_max = max(func)
+    return func/func_max
 
 
 def main():
