@@ -103,13 +103,30 @@ def shootQuatricPotential(psi0, dx, x_range, V_offset, E_arr):
     out_arr = np.asarray(qp_out)
     return x_qp, out_arr
 
+def shootHydrogenIonPotential(psi0, dx, x_range, a, gama, V0, E_arr):
+    x_H = np.arange(-x_range, x_range + dx, dx)
+    V_H = []
+    for x in x_H:
+        if (x > -(gama+2)*a and x < -gama*a) or (x > gama*a and x < (gama+2)*a):
+            V_H.append(V0)
+        else:
+            V_H.append(0)
+    eigE = findEnergyEigenValues(TimeIndependentSE, psi0, x_H, V_H, E_arr)
+    print(eigE)
+    H_out = []
+    for E in eigE:
+        out = rk4(TimeIndependentSE, psi0, x_H, V_H, E)
+        H_out.append(normalize(out[:, 0]))
+    out_arr = np.asarray(H_out)
+    return x_H, out_arr
+
 def main():
     psi_0 = 0.0
     phi_0 = 1.0
     psi0 = np.array([psi_0, phi_0])
     dx = 0.001
-    E = np.arange(0, 3, 0.1)
-    x, states = shootQuatricPotential(psi0, dx, 4, 0, E)
+    E = np.arange(-10, 0, 1)
+    x, states = shootHydrogenIonPotential(psi0, dx, 6, 1, 0.2, -10, E)
     for state in states:
         plt.plot(x, state)
     plt.show()
