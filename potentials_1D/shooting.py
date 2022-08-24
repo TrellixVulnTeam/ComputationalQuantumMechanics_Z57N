@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+import scipy as sp
+from scipy.optimize import newton
 
 
 def TimeIndependentSE(S, x, V, E):
@@ -30,7 +31,7 @@ def shootOneE(E, func, psi0, x, V):
     psi = rk4(func, psi0, x, V, E)
     return psi[len(psi)-1][0]
 
-def findZeros(values):
+def findZeroIntervals(values):
     signs = np.signbit(values)
     return np.where(np.diff(signs))[0]
 
@@ -38,6 +39,13 @@ def normalize(func):
     func_max = max(func)
     return func/func_max
 
+def findEnergyEigenValues(func, psi0, x, V, E_arr):
+    first_shoot = shoot(func, psi0, x, V, E_arr)
+    zeroInterval = findZeroIntervals(first_shoot)
+    eigenEnergies = []
+    for z in zeroInterval:
+        eigenEnergies.append(newton(shootOneE, E_arr[z], args = (func, psi0, x, V)))
+    return np.asarray(eigenEnergies)
 
 def main():
     print("Hello World")
