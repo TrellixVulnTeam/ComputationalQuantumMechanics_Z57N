@@ -60,8 +60,32 @@ def shootInfinitePotentialWell(psi0, dx, a, V0, E_arr):
     out_arr = np.asarray(ipw_out)
     return x, out_arr
 
+def shootFinitePotentialWell(psi0, dx, x_range, a, V0, E_arr):
+    x_arr_pw = np.arange(-x_range, x_range + dx, dx)
+    V_pw = []
+    for x in x_arr_pw:
+        if x < -a/2.0 or x > a/2.0:
+            V_pw.append(0) 
+        else:
+            V_pw.append(V0)
+    eigE = findEnergyEigenValues(TimeIndependentSE, psi0, x_arr_pw, V_pw, E_arr)
+    pw_out = []
+    for EE in eigE:
+        out = rk4(TimeIndependentSE, psi0, x_arr_pw, V_pw, EE)
+        pw_out.append(normalize(out[: , 0]))
+    out_arr = np.asarray(pw_out)
+    return x_arr_pw, out_arr
+
 def main():
-    print("Hello World")
+    psi_0 = 0.0
+    phi_0 = 1.0
+    psi0 = np.array([psi_0, phi_0])
+    dx = 0.001
+    E = np.arange(-25, 0, 1.0)
+    x, states = shootFinitePotentialWell(psi0, dx, 4, 1, -25, E)
+    for state in states:
+        plt.plot(x, state)
+    plt.show()
 
 if __name__ == "__main__":
     main()
